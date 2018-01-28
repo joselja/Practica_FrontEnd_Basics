@@ -1,50 +1,56 @@
-var form = document.getElementsByName("contacto")[0];
+// Ajax request implementation scripts
 
 var xhr = new XMLHttpRequest();
 
+// getData from server function 
 function getData() {
-  makeRequest("GET", "http://localhost:8000/api/task", null, function(data) {
-    var response = JSON.parse(data);
-    var div = document.createElement("div");
-    var children = "";
+    
+    makeRequest('GET', 'http://localhost:8000/api/task', null, function(data) {
+        
+        var response = JSON.parse(data);
+        var div = document.createElement('div');
+        var children = "";
+        response.forEach(element => {
+        children += '<p>' + element.nombre + '</p>';
+        children += '<p>' + element.email + '</p>';
+        children += '<p>' + element.numero + '</p>';
+        children += '<p>' + element.observa + '</p></br>';
 
-    response.forEach(element => {
-      children += "<p>" + element.name + "</p>";
+    
     });
 
     div.innerHTML = children;
-
     form.appendChild(div);
+
   });
 }
 
-
-function createData() {
-  var data = {
-    name: "Prueba"
-  };
-  makeRequest("POST", "http://localhost:8000/api/task", data, function() {
-    console.log("Datos creados correctamente");
-  });
+// CreateData function
+function createData(data) {
+    makeRequest('POST', 'http://localhost:8000/api/task', data, function() {
+        console.log("Datos creados correctamente");
+    });
 }
 
-getData();
-
+// MakeRequest function
 function makeRequest(method, url, body, callbackSuccess) {
-  var xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
 
-  xhr.open(method, url, true);
-  xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
 
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState === 4) {
-      callbackSuccess(xhr.responseText);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            callbackSuccess(xhr.responseText);
+        }
+    };
+
+    if (body) {
+        xhr.send(JSON.stringify(body));
+    } else {
+        xhr.send();
     }
-  };
-
-  if (body) {
-    xhr.send(JSON.stringify(body));
-  } else {
-    xhr.send();
-  }
 }
+
+// createData();
+getData();
